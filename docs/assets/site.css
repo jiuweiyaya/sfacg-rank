@@ -1,0 +1,203 @@
+/*
+ * Page chrome for the standalone site.
+ *
+ * The table, drawer and charts come from the DSH panel and read their colours
+ * from the shell's `--dsw-*` tokens; defining those tokens here is what lets the
+ * exact same stylesheet work outside the shell, in both colour schemes.
+ */
+
+:root {
+	--page-bg: #f3f4f8;
+	--page-fg: #1b1b1b;
+	--card-bg: #ffffff;
+	--card-border: rgba(20, 20, 35, 0.1);
+	--dsw-alias-label-primary: #1b1b1b;
+	--dsw-alias-border-l1: rgba(20, 20, 35, 0.12);
+	--dsw-alias-border-l2: rgba(20, 20, 35, 0.22);
+	--dsw-brand-primary: #4d6bfe;
+	--dsw-alias-bg-base: #ffffff;
+	--dsw-alias-bg-elevated: #ffffff;
+	--dsw-alias-interactive-bg-hover: rgba(20, 20, 35, 0.05);
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--page-bg: #0f1015;
+		--page-fg: #e9eaf0;
+		--card-bg: #16171d;
+		--card-border: rgba(255, 255, 255, 0.09);
+		--dsw-alias-label-primary: #e9eaf0;
+		--dsw-alias-border-l1: rgba(255, 255, 255, 0.1);
+		--dsw-alias-border-l2: rgba(255, 255, 255, 0.2);
+		--dsw-brand-primary: #7b90ff;
+		--dsw-alias-bg-base: #16171d;
+		--dsw-alias-bg-elevated: #1c1e26;
+		--dsw-alias-interactive-bg-hover: rgba(255, 255, 255, 0.06);
+	}
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+	height: 100%;
+	margin: 0;
+}
+
+body {
+	background: var(--page-bg);
+	color: var(--page-fg);
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+	-webkit-font-smoothing: antialiased;
+}
+
+#root { height: 100%; }
+
+.site-shell {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	min-height: 0;
+	padding: 0 16px;
+}
+
+.site-head {
+	width: 100%;
+	max-width: 1180px;
+	margin: 0 auto;
+	padding: 18px 4px 12px;
+	display: flex;
+	align-items: flex-end;
+	gap: 16px;
+	flex-wrap: wrap;
+}
+
+.site-brand h1 {
+	margin: 0;
+	font-size: 20px;
+	font-weight: 700;
+	letter-spacing: 0.2px;
+}
+
+.site-brand span {
+	display: block;
+	margin-top: 3px;
+	font-size: 12px;
+	opacity: 0.55;
+}
+
+.site-meta {
+	font-size: 12px;
+	opacity: 0.62;
+	line-height: 1.7;
+	margin-left: auto;
+	text-align: right;
+}
+
+.site-meta strong {
+	font-variant-numeric: tabular-nums;
+	font-weight: 600;
+}
+
+.site-dot { opacity: 0.4; margin: 0 6px; }
+
+.site-controls {
+	width: 100%;
+	display: flex;
+	gap: 8px;
+	flex-wrap: wrap;
+	align-items: center;
+	margin-top: 4px;
+}
+
+.site-controls .dsh-sfacg-input { width: 200px; }
+
+.site-notice {
+	width: 100%;
+	max-width: 1180px;
+	margin: 0 auto 8px;
+	padding: 8px 12px;
+	border-radius: 8px;
+	font-size: 12.5px;
+	line-height: 1.6;
+	background: rgba(77, 107, 254, 0.08);
+	border: 1px solid rgba(77, 107, 254, 0.24);
+	color: var(--dsw-brand-primary);
+}
+
+.site-notice.is-warn {
+	background: rgba(198, 144, 38, 0.1);
+	border-color: rgba(198, 144, 38, 0.3);
+	color: #b07813;
+}
+
+.site-notice.is-bad {
+	background: rgba(229, 83, 75, 0.1);
+	border-color: rgba(229, 83, 75, 0.32);
+	color: #d34840;
+}
+
+.site-main {
+	flex: 1;
+	min-height: 0;
+	width: 100%;
+	max-width: 1180px;
+	margin: 0 auto;
+	background: var(--card-bg);
+	border: 1px solid var(--card-border);
+	border-radius: 12px;
+	overflow: hidden;
+	box-shadow: 0 1px 2px rgba(15, 20, 40, 0.04), 0 12px 32px rgba(15, 20, 40, 0.05);
+}
+
+.site-main .dsh-sfacg { height: 100%; }
+
+.site-foot {
+	width: 100%;
+	max-width: 1180px;
+	margin: 0 auto;
+	padding: 10px 4px 16px;
+	display: flex;
+	gap: 8px;
+	flex-wrap: wrap;
+	align-items: center;
+	font-size: 11.5px;
+	opacity: 0.55;
+}
+
+/* Count + "show more": the list scrolls inside the card, so this bar is what
+   tells a reader that there are 1,600 books and not the dozen on screen. */
+.site-count {
+	width: 100%;
+	max-width: 1180px;
+	margin: 0 auto;
+	padding: 8px 4px 2px;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	flex-wrap: wrap;
+	font-size: 12.5px;
+}
+
+.site-count > span:first-child { font-variant-numeric: tabular-nums; }
+.site-hint { font-size: 11.5px; opacity: 0.5; }
+
+/* Reserve the scrollbar's width so the columns do not shift when it appears. */
+.site-main .dsh-sfacg-body {
+	scrollbar-gutter: stable;
+	scrollbar-width: thin;
+}
+
+.site-spacer { flex: 1; }
+
+/* The drawer is absolutely positioned inside the panel; on a tall page it
+   should not be clipped by the card's rounded corner. */
+.site-main .dsh-sfacg-drawer { border-top-right-radius: 12px; border-bottom-right-radius: 12px; }
+
+@media (max-width: 720px) {
+	.site-head { align-items: flex-start; }
+	.site-meta { margin-left: 0; text-align: left; }
+	.site-controls .dsh-sfacg-input { width: 100%; }
+	.site-main { border-radius: 0; border-left: none; border-right: none; }
+	.site-shell { padding: 0; }
+	.site-head, .site-foot, .site-notice { padding-left: 12px; padding-right: 12px; }
+}

@@ -1,0 +1,14 @@
+{
+  "name": "sfacg-rank-site",
+  "private": true,
+  "type": "module",
+  "description": "菠萝包数据榜：抓取 book.sfacg.com 的收藏 / 月票 / 人气 / 字数，生成静态排行榜并每小时自动更新。",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "scan": "node tools/scan.mjs",
+    "export": "node tools/export-site.mjs --dir .data --out docs/data"
+  },
+  "license": "MIT"
+}

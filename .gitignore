@@ -1,0 +1,8 @@
+# 抓取时的工作目录，内容是 docs/data 的副本，不需要进版本库
+.data/
+node_modules/
+
+# 编辑器
+.vscode/
+.DS_Store
+Thumbs.db

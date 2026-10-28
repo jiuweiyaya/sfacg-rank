@@ -1,0 +1,59 @@
+# 菠萝包数据榜 · 自动抓取与发布
+#
+# 每小时跑一次：抓 book.sfacg.com 的「七日内更新」书目与每本书的收藏 / 月票 /
+# 人气 / 字数，把结果导出成静态 JSON 并提交。GitHub Pages 直接发布 `docs/`。
+#
+# 仓库里不保存抓取过程中的中间状态：上一次的 hourly / daily 桶就写在
+# `docs/data/` 里，运行开始时读回来，所以历史能一直接着长。
+
+name: rank
+
+on:
+  schedule:
+    # GitHub 的 cron 用 UTC，且高峰期会延迟几分钟到十几分钟，这是平台行为。
+    - cron: '7 * * * *'
+  workflow_dispatch:
+
+# 同一时间只跑一个，避免两次抓取互相覆盖数据。
+concurrency:
+  group: sfacg-rank
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 恢复上一次的时间序列
+        run: node tools/restore-store.mjs --data docs/data --store .data
+
+      - name: 抓取
+        env:
+          DSH_SFACG_DIR: ${{ github.workspace }}/.data
+        run: node tools/scan.mjs
+
+      - name: 导出站点数据
+        if: always()
+        run: node tools/export-site.mjs --dir .data --out docs/data
+
+      - name: 提交数据
+        if: always()
+        run: |
+          git config user.name 'sfacg-rank'
+          git config user.email 'sfacg-rank@users.noreply.github.com'
+          git add docs/data
+          if git diff --staged --quiet; then
+            echo "数据没有变化，不提交"
+          else
+            git commit -m "data: $(date -u '+%Y-%m-%d %H:%M UTC')"
+            git push
+          fi
